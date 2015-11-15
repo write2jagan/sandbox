@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-kafka="http://www.springframework.org/schema/integration/kafka"
+       xmlns:stream="http://www.springframework.org/schema/integration/stream"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/integration
+       http://www.springframework.org/schema/integration/spring-integration.xsd
+       http://www.springframework.org/schema/integration/kafka
+       http://www.springframework.org/schema/integration/kafka/spring-integration-kafka.xsd
+       http://www.springframework.org/schema/integration/stream 
+       http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+       ">
+
+
+  <int-kafka:zookeeper-connect id="zkConnect" 
+    zk-connect="localhost:2181"
+    zk-connection-timeout="6000" 
+    zk-session-timeout="6000" 
+    zk-sync-time="2000" />
+    
+ <bean id="kafkaConfiguration" class="org.springframework.integration.kafka.core.ZookeeperConfiguration">
+    <constructor-arg ref="zkConnect"/>
+  </bean>
+
+  <bean id="connectionFactory" class="org.springframework.integration.kafka.core.DefaultConnectionFactory">
+    <constructor-arg ref="kafkaConfiguration"/>
+  </bean>
+  
+  <bean id="offsetManager" class="org.springframework.integration.kafka.listener.KafkaTopicOffsetManager">
+       <constructor-arg ref="zkConnect"/>
+       <constructor-arg type="java.lang.String">
+        <value>si-offsets</value>
+       </constructor-arg>
+  </bean>
+  
+  <bean id="errorHandler" class="org.springframework.integration.kafka.listener.LoggingErrorHandler" />
+
+  <bean id="keyDecoder" class="org.springframework.integration.kafka.serializer.common.StringDecoder"/>
+   
+
+  <bean id="payloadDecoder" class="org.springframework.integration.kafka.serializer.common.StringDecoder"/>
+
+  <task:executor id="executor"/>
+
+  <int-kafka:message-driven-channel-adapter
+      id="kafkaAdapter"
+      auto-startup="false"
+      phase="100"
+      send-timeout="5000"
+      channel="nullChannel"
+      error-channel="errorChannel"
+      error-handler="errorHandler"
+      connection-factory="connectionFactory"
+      key-decoder="keyDecoder"
+      payload-decoder="payloadDecoder"
+      offset-manager="offsetManager"
+      task-executor="executor"
+      stop-timeout="500"
+      queue-size="1024"
+      concurrency="1"
+      max-fetch="1000"
+      topics="test2" />
+</beans>
+
+<!-- At the moment concurrency is set to 1 one cause  -->
+

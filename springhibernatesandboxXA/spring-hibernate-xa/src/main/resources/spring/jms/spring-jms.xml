@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	
+	
+	<!--Activemq section -->
+
+	<bean id="xaFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean>
+
+	<!-- Configure the JMS connector; call init to register for recovery! -->
+	<bean id="realConnectionFactory" class="com.atomikos.jms.AtomikosConnectionFactoryBean"
+		init-method="init">
+		<property name="uniqueResourceName" value="amq1" />
+		<property name="xaConnectionFactory" ref="xaFactory" />
+	</bean>
+
+	<bean id="connectionFactory"
+		class="org.springframework.jms.connection.SingleConnectionFactory">
+		<property name="targetConnectionFactory" ref="realConnectionFactory" />
+	</bean>
+	
+	
+	<!--  use my bean in default container -->
+	
+	<bean id="messageListener" class="it.balyfix.listener.JmsMessageListener" />
+	
+	<bean id="messageListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="transactionManager" ref="jtaTransactionManager" />
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="messageListener" ref="messageListener" />
+		<property name="destinationName" value="requestQueue" />
+		<property name="concurrentConsumers" value="1" />
+		<property name="receiveTimeout" value="3000" />
+		<property name="sessionTransacted" value="true" />
+	</bean>
+
+	
+</beans>

@@ -1,0 +1,18 @@
+create table STOCK (
+	ID int not null GENERATED ALWAYS AS IDENTITY CONSTRAINT STOCK_PK PRIMARY KEY, 
+	STOCK_CODE varchar(4000),
+	STOCK_NAME varchar(4000));
+
+	
+create table STOCK_DETAIL (
+	ID int not null GENERATED ALWAYS AS IDENTITY, 
+	COMP_NAME varchar(4000),
+	COMP_DESC varchar(4000),
+	REMARK varchar(4000) ,
+	LOCAL_DATE Date,
+	STOCK integer,
+	FOREIGN KEY(STOCK) REFERENCES STOCK(ID) ON DELETE NO ACTION ON UPDATE NO ACTION);
+
+insert into STOCK (STOCK_CODE,STOCK_NAME) values('a','stokenameA');
+insert into STOCK (STOCK_CODE,STOCK_NAME) values('b','stokenameB');
+

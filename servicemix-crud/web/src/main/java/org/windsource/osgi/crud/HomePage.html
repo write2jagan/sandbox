@@ -1,0 +1,98 @@
+<html
+	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+<head>
+<title>Report Incident HomePage</title>
+</head>
+<body>
+	<form wicket:id="incidentForm">
+		<span wicket:id="feedback" />
+		<div wicket:id="incidentListContainer">
+			<table>
+				<thead>incident List
+				</thead>
+				<tbody>
+					<tr wicket:id="incidentListView">
+						<td><span wicket:id="incidentDate" /></td>
+						<td><span wicket:id="incidentRef" /></td>
+						<td><span wicket:id="givenName" /></td>
+						<td><span wicket:id="familyName" /></td>
+						<td><span wicket:id="summary" /></td>
+						<td><span wicket:id="details" /></td>
+						<td><span wicket:id="email" /></td>
+						<td><span wicket:id="phone" /></td>
+						<td><span wicket:id="creationUser" /></td>
+						<td><span wicket:id="creationDate" /></td>
+						<td>
+							<button wicket:id="editIncident">Edit</button></td>
+						<td>
+							<button wicket:id="deletePerson">Delete</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div wicket:id="incidentDetailsContainer">
+			<table>
+				<tr>
+					<td>incidentDate</td>
+					<td><input type="text" wicket:id="incidentDate" />
+					</td>
+				</tr>
+				<tr>
+					<td>incidentRef</td>
+					<td><input type="text" wicket:id="incidentRef" />
+					</td>
+
+				</tr>
+				<tr>
+					<td>givenName</td>
+					<td><input type="text" wicket:id="givenName" />
+					</td>
+				</tr>
+				<tr>
+					<td>familyName</td>
+					<td><input type="text" wicket:id="familyName" />
+					</td>
+				</tr>
+				<tr>
+					<td>summary</td>
+					<td><input type="text" wicket:id="summary" />
+					</td>
+				</tr>
+				<tr>
+					<td>details</td>
+					<td><input type="text" wicket:id="details" />
+					</td>
+				</tr>
+				<tr>
+					<td>email</td>
+					<td><input type="text" wicket:id="email" />
+					</td>
+				</tr>
+				<tr>
+					<td>phone</td>
+					<td><input type="text" wicket:id="phone" />
+					</td>
+				</tr>
+				<tr>
+					<td>creationUser</td>
+					<td><input type="text" wicket:id="creationUser" />
+					</td>
+				</tr>
+				<tr>
+					<td>creationDate</td>
+					<td><input type="text" wicket:id="creationDate" /></td>
+				</tr>
+				<tr>
+					<td><button wicket:id="save" type="submit" title="Save">Save</button>
+					</td>
+					<td><button wicket:id="cancel" type="reset" title="Cancel">Cancel</button>
+					</td>
+				</tr>
+			</table>
+
+
+		</div>
+	</form>
+</body>
+</html>

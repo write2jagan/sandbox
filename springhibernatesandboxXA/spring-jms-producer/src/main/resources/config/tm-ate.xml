@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+    <!-- import connection factory ConnectionFactory -->
+    <import resource="connectionFactory-activemq-ate.xml"/>
+
+	<!-- Construct Atomikos UserTransactionManager, needed to configure Spring -->
+	<bean id="AtomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close">
+		<!--  when close is called, should we force transactions to terminate or not? -->
+		<property name="forceShutdown" value="true" />
+	</bean>
+
+	<!-- Also use Atomikos UserTransactionImp, needed to configure Spring  --> 
+	<bean id="AtomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+	    <property name="transactionTimeout" value="300" />
+	</bean>
+
+	<!-- Configure the Spring framework to use JTA transactions from Atomikos -->
+	<bean id="JtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="transactionManager" ref="AtomikosTransactionManager" />
+		<property name="userTransaction" ref="AtomikosUserTransaction" />
+	</bean>
+
+    <!-- Configure the JMS template used to send messages -->
+    <bean id="JmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="ConnectionFactory" />
+        <property name="sessionTransacted" value="true" />
+    </bean>
+
+    <!-- create real business object, this is your own implementation -->
+	<bean id="RealUserFacade" class="it.balyfix.UserFacade">
+		<property name="jmsTemplate" ref="JmsTemplate" />
+		<property name="queue" ref="Queue" />
+	</bean>
+
+    <!-- wrap real business object with a spring-generated JTA proxy
+         this is the only object that need to be obtained from the ApplicationContext -->
+	<bean id="UserFacade" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="JtaTransactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED, -Exception</prop>
+			</props>
+		</property>
+		<property name="target" ref="RealUserFacade" />
+	</bean>
+</beans>

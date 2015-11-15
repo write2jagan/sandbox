@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+    <!-- Allows us to set properties used as ant-like variables ${...} -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+			<props>
+				<prop key="outboundQueueName">requestQueue</prop>
+			</props>
+		</property>
+    </bean>
+    
+	<!-- queue -->
+    <bean id="Queue" class="org.apache.activemq.command.ActiveMQQueue">
+	    <property name="physicalName" value="${outboundQueueName}" />
+    </bean>
+	
+	<bean id="XaFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean>
+	
+	<!-- Configure the JMS connector; call init to register for recovery! -->
+	<bean id="RealConnectionFactory" class="com.atomikos.jms.QueueConnectionFactoryBean" init-method="init">
+		<property name="resourceName" value="amq1" />
+		<property name="xaQueueConnectionFactory" ref="XaFactory" />
+	</bean>
+	
+	<!-- connection factory -->
+	<bean id="ConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+		<property name="targetConnectionFactory" ref="RealConnectionFactory" />
+	</bean>
+	
+</beans>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<features>
+
+    <feature name="reportincident-jpa" version="${project.version}">
+        <feature version='${wicket-version}'>wicket</feature>
+        <feature>jdbc-driver-h2</feature>
+        <feature version='${spring-version}'>spring-persistence</feature>
+        <feature version='${openjpa-version}'>openjpa</feature>
+        <feature>spring-dm-web</feature>
+        <bundle>mvn:org.windsource.osgi.crud.reportincident/persistence-jpa/${project.version}</bundle>
+        <bundle>mvn:org.windsource.osgi.crud.reportincident/service/${project.version}</bundle>
+        <bundle>mvn:org.windsource.osgi.crud.reportincident/web/${project.version}/war</bundle>
+    </feature>
+
+    <feature name="spring-persistence" version="${spring-version}">
+        <bundle>mvn:org.springframework/spring-orm/${spring-version}</bundle>
+        <bundle>mvn:org.springframework/spring-jdbc/${spring-version}</bundle>
+        <bundle>mvn:org.springframework/spring-aspects/${spring-version}</bundle>
+    </feature>
+
+    <feature name="openjpa" version="${openjpa-version}">
+        <bundle>mvn:org.apache.geronimo.specs/geronimo-jpa_2.0_spec/1.1</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/1.13.1_2</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/1.4_1</bundle>
+        <bundle>mvn:org.apache.openjpa/openjpa/${openjpa-version}</bundle>
+     </feature>
+
+    <feature name="jdbc-driver-h2" version="${h2-version}">
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/1.4_1</bundle>
+        <bundle>mvn:com.h2database/h2/${h2-version}</bundle>
+    </feature>
+
+    <feature name="wicket" version="${wicket-version}">
+        <bundle>mvn:org.apache.wicket/wicket/${wicket-version}</bundle>
+        <bundle>mvn:org.apache.wicket/wicket-ioc/${wicket-version}</bundle>
+        <bundle>mvn:org.apache.wicket/wicket-spring/${wicket-version}</bundle>
+        <bundle>mvn:org.apache.wicket/wicket-extensions/${wicket-version}</bundle>
+    </feature>
+
+</features>
