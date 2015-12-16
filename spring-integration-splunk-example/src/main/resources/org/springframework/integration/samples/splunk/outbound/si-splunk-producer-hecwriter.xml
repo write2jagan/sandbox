@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:stream="http://www.springframework.org/schema/integration/stream"
+	xmlns:int-splunk="http://www.springframework.org/schema/integration/splunk"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
+		     http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+	 	     http://www.springframework.org/schema/integration/splunk http://www.springframework.org/schema/integration/splunk/spring-integration-splunk-1.2.xsd
+             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+   <int:poller default="true" fixed-delay="50" />
+
+
+	<int-splunk:server id="splunkServer" host="localhost"
+		port="8089" username="admin" password="admin" owner="admin" />
+
+
+    <int:channel id="outputToSplunk"/>
+
+	
+	<int-splunk:outbound-channel-adapter
+			id="splunkOutboundChannelAdapter" auto-startup="false" order="1"
+			channel="outputToSplunk" 
+			source-type="spring-integration" source="example5"
+			host="test.host" host-regex="test.host.*">
+		<int-splunk:hec-writer host="localhost" port="8088" token="3EBC39B6-7C9E-454D-9A0B-17170D5FF4C0" https="false" 
+		                       poolsize="3" index="main" source="spring_integration"  sourcetype="spring_integration_hec" batchmode="true" 
+		                       maxbatchsizebytes="1048576" maxbatchsizeevents="100" maxinactivetimebeforebatchflush="5000" />
+	</int-splunk:outbound-channel-adapter>
+	
+
+
+</beans>
