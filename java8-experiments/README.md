@@ -1,10 +1,12 @@
-My own experimental project to familiarize java 8.
+My own experimental project to familiarize with java8.
 
-I Compared old style programming with new style using lambdas expression with third-party framework like Spring
+Compared old style programming with new style using lambdas expression with third-party framework like Spring
 
-Then a play to create a DSL. 
-The first thing to do in a project that in need to understand is model, with out that is impossible, IMHO, hope that the project is successful.
-In DSL world Semantic Model as very close  with Domain Models and that should be designed around the purpose of the DSL.
+Then I play to create a little DSL. 
+
+The first thing to do in a project is understand the model, without that is impossible, IMHO, hope that the project is successful.
+
+In DSL world Semantic Model is very close with Domain Models and that should be designed around the purpose of the DSL.
 
 For more deeper analysis of the problem can be found in chapter 11 on Martin Fowler's DSL book.
 
