@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="sysout" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%t] %c: %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="gelf" class="it.balyfix.gelf.logger.log4j.GelfAppender">
+        <param name="targetHost" value="test:localhost" />
+        <param name="targetPort" value="12201" />
+        <param name="version" value="1.1" />
+        <param name="extractStackTrace" value="true" />
+        <param name="filterStackTrace" value="true" />
+        <param name="mdcProfiling" value="true" />
+        <param name="timestampPattern" value="yyyy-MM-dd HH:mm:ss,SSSS" />
+        <param name="maximumMessageSize" value="8192" />
+        <param name="additionalFields" value="{'environment': 'DEV', 'application': 'WEBAPP'}" />
+        <param name="mdcFields" value="mdcField1,mdcField2" />
+        <param name="threshold" value="ALL" />
+    </appender>
+    
+    
+<!-- da controllare cosa fanno questi campi -->
+
+<!-- log4j:WARN No such property [version] in org.graylog2.log.GelfAppender. -->
+<!-- log4j:WARN No such property [extractStackTrace] in org.graylog2.log.GelfAppender. -->
+<!-- log4j:WARN No such property [filterStackTrace] in org.graylog2.log.GelfAppender. -->
+<!-- log4j:WARN No such property [mdcProfiling] in org.graylog2.log.GelfAppender. -->
+<!-- log4j:WARN No such property [timestampPattern] in org.graylog2.log.GelfAppender. -->
+<!-- log4j:WARN No such property [maximumMessageSize] in org.graylog2.log.GelfAppender. -->
+<!-- log4j:WARN No such property [mdcFields] in org.graylog2.log.GelfAppender.     -->
+
+
+
+
+
+
+    <root>
+        <priority value="DEBUG" />
+        <appender-ref ref="sysout" />
+        <appender-ref ref="gelf" />
+    </root>
+
+</log4j:configuration>

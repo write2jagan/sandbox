@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- Appenders -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{HH:mm:ss.SSS} %-5p [%t][%c] %m%n" />
+		</layout>
+	</appender>
+	
+	
+	 <appender name="gelf" class="it.balyfix.gelf.logger.log4j.GelfAppender">
+        <param name="targetHost" value="amqp://localhost" />
+        <param name="amqpExchangeName" value="messages" />
+        <param name="amqpRoutingKey" value="gelfudp" />
+        <param name="amqpMaxRetries" value="5" />
+        <param name="additionalFields" value="{'environment': 'DEV', 'application': 'WEBAPP'}" />
+        <param name="threshold" value="ALL" />
+    </appender>
+	
+
+	<!-- Loggers -->
+	<logger name="it.balyfix">
+		<level value="info" />
+	</logger>
+
+	
+	<!-- Root Logger -->
+	<root>
+		<priority value="info" />
+		<appender-ref ref="console" />
+		<appender-ref ref="gelf" />
+	</root>
+
+</log4j:configuration>
