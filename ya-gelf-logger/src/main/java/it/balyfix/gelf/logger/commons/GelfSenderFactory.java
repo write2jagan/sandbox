@@ -15,6 +15,7 @@ import java.util.ServiceLoader;
 import it.balyfix.gelf.logger.providers.AMQPProvider;
 import it.balyfix.gelf.logger.providers.DefaultSenderProvider;
 import it.balyfix.gelf.logger.providers.GelfSenderProvider;
+import it.balyfix.gelf.logger.providers.KafkaProvider;
 import it.balyfix.gelf.logger.sender.GelfSender;
 
 public final class GelfSenderFactory {
@@ -107,6 +108,7 @@ public final class GelfSenderFactory {
 			}
 			providerList.add(new DefaultSenderProvider());
 			providerList.add(new AMQPProvider());
+			providerList.add(new KafkaProvider());
 		}
 
 		static List<GelfSenderProvider> getSenderProvider() {

@@ -18,6 +18,7 @@ import it.balyfix.gelf.logger.message.GelfMessage;
 import it.balyfix.gelf.logger.message.GelfMessageFactory;
 import it.balyfix.gelf.logger.message.GelfMessageProvider;
 import it.balyfix.gelf.logger.providers.AMQPProvider;
+import it.balyfix.gelf.logger.providers.KafkaProvider;
 import it.balyfix.gelf.logger.sender.GelfSender;
 import it.balyfix.gelf.logger.sender.GelfSenderResult;
 
@@ -38,6 +39,8 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 	private String facility;
 
 	private GelfSender gelfSender;
+
+	private String topic;
 
 	private boolean extractStacktrace;
 
@@ -112,6 +115,14 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 		this.extractStacktrace = extractStacktrace;
 	}
 
+	public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+
 	public String getOriginHost() {
 		if (originHost == null) {
 			originHost = getLocalHostName();
@@ -174,6 +185,11 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 			extraconfiguration.put(AMQPProvider.MAX_RETRIES, amqpMaxRetries);
 		}
 
+		if (topic != null && !topic.isEmpty()) {
+			extraconfiguration.put(KafkaProvider.TOPIC, topic);
+		}
+		extraconfiguration.put(KafkaProvider.CLIENT_ID, originHost);
+
 		gelfSender = GelfSenderFactory.getSender(new BaseHostHostProvider() {
 
 			@Override
@@ -211,8 +227,9 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 		if (amqpExchangeName != null && amqpExchangeName.length() != 0 && amqpRoutingKey != null
 				&& amqpRoutingKey.length() != 0) {
 			return true;
-		} else if (amqpExchangeName != null || amqpExchangeName.length() != 0 || amqpRoutingKey != null
-				|| amqpRoutingKey.length() != 0) {
+		} else if (amqpExchangeName == null || amqpRoutingKey == null) {
+			return false;
+		} else if (amqpExchangeName.length() == 0 || amqpRoutingKey.length() == 0) {
 			errorHandler.error("Please initialize all fields to use amqp ");
 		}
 
