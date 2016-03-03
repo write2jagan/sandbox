@@ -207,7 +207,7 @@ public class GelfAppender extends AppenderSkeleton implements GelfMessageProvide
 	}
 
 	@Override
-	protected void append(LoggingEvent event) {
+	public void append(LoggingEvent event) {
 		GelfMessage gelfMessage = GelfMessageFactory.makeMessage(layout, event, this);
 
 		if (getGelfSender() == null) {

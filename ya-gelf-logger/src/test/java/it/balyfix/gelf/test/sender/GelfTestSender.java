@@ -1,4 +1,4 @@
-package it.balyfix.gelf.sender;
+package it.balyfix.gelf.test.sender;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

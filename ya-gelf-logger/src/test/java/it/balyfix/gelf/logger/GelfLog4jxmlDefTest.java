@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import it.balyfix.gelf.logger.message.GelfMessage;
-import it.balyfix.gelf.sender.GelfTestSender;
+import it.balyfix.gelf.test.sender.GelfTestSender;
 
 public class GelfLog4jxmlDefTest {
 
