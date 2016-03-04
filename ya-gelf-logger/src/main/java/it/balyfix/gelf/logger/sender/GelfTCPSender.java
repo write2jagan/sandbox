@@ -2,7 +2,8 @@ package it.balyfix.gelf.logger.sender;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.Socket;
 
 import it.balyfix.gelf.logger.message.GelfMessage;
 

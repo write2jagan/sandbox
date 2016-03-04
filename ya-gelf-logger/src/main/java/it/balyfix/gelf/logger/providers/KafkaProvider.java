@@ -9,7 +9,7 @@ import it.balyfix.gelf.logger.commons.SenderConfiguration;
 import it.balyfix.gelf.logger.sender.GelfKafkaSender;
 import it.balyfix.gelf.logger.sender.GelfSender;
 
-public class KafkaProvider implements GelfSenderProvider {
+public class KafkaProvider extends AbstractGelfSenderProvider {
 
 	public final static String TOPIC = "TOPIC";
 
@@ -27,11 +27,7 @@ public class KafkaProvider implements GelfSenderProvider {
 
 		String clientId = (String) configuration.getExtraconfiguration().get(CLIENT_ID);
 		String topic = (String) configuration.getExtraconfiguration().get(TOPIC);
-		String[] hostSplitter = configuration.getHost().split(":");
-		if (hostSplitter.length != 2) {
-			throw new IllegalArgumentException("Please check host configuration! I'm wainting kafka:<ipaddress> I retrieve : " + configuration.getHost());
-		}
-		String host = configuration.getHost().split(":")[1];
+		String host = getCanonicalHost(configuration.getHost());
 		String bootstrapServer = host + ":" + configuration.getPort();
 		return new GelfKafkaSender(topic, bootstrapServer, clientId);
 	}

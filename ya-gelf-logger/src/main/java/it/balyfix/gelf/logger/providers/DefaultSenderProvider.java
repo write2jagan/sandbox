@@ -7,7 +7,7 @@ import it.balyfix.gelf.logger.sender.GelfSender;
 import it.balyfix.gelf.logger.sender.GelfTCPSender;
 import it.balyfix.gelf.logger.sender.GelfUDPSender;
 
-public class DefaultSenderProvider implements GelfSenderProvider {
+public class DefaultSenderProvider extends AbstractGelfSenderProvider {
 
 	@Override
 	public boolean supports(String host) {
@@ -26,10 +26,10 @@ public class DefaultSenderProvider implements GelfSenderProvider {
 		}
 
 		if (host.startsWith("tcp:")) {
-			return new GelfTCPSender(host, port);
+			return new GelfTCPSender(getCanonicalHost(host), port);
 
 		} else if (host.startsWith("udp:")) {
-			return new GelfUDPSender(host, port);
+			return new GelfUDPSender(getCanonicalHost(host), port);
 		}
 
 		return null;

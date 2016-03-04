@@ -8,12 +8,11 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
-
-import it.balyfix.gelf.logger.message.GelfMessage;
-
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+
+import it.balyfix.gelf.logger.message.GelfMessage;
 
 public class GelfAMQPSender implements GelfSender {
 

@@ -9,7 +9,7 @@ import it.balyfix.gelf.logger.commons.SenderConfiguration;
 import it.balyfix.gelf.logger.sender.GelfAMQPSender;
 import it.balyfix.gelf.logger.sender.GelfSender;
 
-public class AMQPProvider implements GelfSenderProvider {
+public class AMQPProvider extends AbstractGelfSenderProvider {
 
 	public static String AMQP_EXCHANGE_NAME = "AMQP_EXCHANGE_NAME";
 
@@ -30,7 +30,7 @@ public class AMQPProvider implements GelfSenderProvider {
 		String amqpExchangeName = (String) configuration.getExtraconfiguration().get(AMQP_EXCHANGE_NAME);
 		String amqpRoutingKey = (String) configuration.getExtraconfiguration().get(AMQP_ROUTING_KEY);
 		Integer maxRetries = (Integer) configuration.getExtraconfiguration().get(MAX_RETRIES);
-		return new GelfAMQPSender(configuration.getHost(), amqpExchangeName, amqpRoutingKey, maxRetries);
+		return new GelfAMQPSender(getCanonicalHost(configuration.getHost()), amqpExchangeName, amqpRoutingKey, maxRetries);
 
 	}
 
