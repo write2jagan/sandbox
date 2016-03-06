@@ -11,9 +11,9 @@
 	</appender>
 	
 	
-	 <appender name="gelf" class="org.graylog2.log.GelfAppender">
-        <param name="graylogHost" value="udp:localhost" />
-        <param name="graylogPort" value="12201" />
+	 <appender name="gelf" class="it.balyfix.gelf.logger.log4j.GelfAppender">
+        <param name="targetHost" value="udp:localhost" />
+        <param name="targetPort" value="12201" />
         <param name="additionalFields" value="{'environment': 'DEV', 'application': 'WEBAPP'}" />
         <param name="threshold" value="ALL" />
     </appender>

@@ -2,7 +2,7 @@ My own experimental project to familiarize "new" concurrency API introduced with
 After is see number of method of CompletableFuture I'll start to think that was better to play a little with it and
 try new framework/tools that port "reactive" ideas on jvm.
 
-Also addeed a list of general purpose patterns used in concurrency. I retrieve that from 
+Also added a list of general purpose patterns used in concurrency. I retrieve that from 
 `Pattern-Oriented Software Architecture, Patterns for Concurrent and Networked Objects, Volume 2`
 
 
