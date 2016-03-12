@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.balyfix</groupId>
-	<artifactId>lambda-concurrency-experiments</artifactId>
+	<artifactId>councurrency-experiments</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>lambda-concurrency-experiments</name>
+	<name>councurrency-experiments</name>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -93,6 +93,21 @@
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxjava</artifactId>
 			<version>${javarx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.javolution</groupId>
+			<artifactId>javolution</artifactId>
+			<version>5.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.10</artifactId>
+			<version>0.9.0.1</version>
 		</dependency>
 	</dependencies>
 	<build>
