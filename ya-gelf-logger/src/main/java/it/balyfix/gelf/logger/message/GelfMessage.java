@@ -102,6 +102,7 @@ public class GelfMessage {
 	}
 
 	public ByteBuffer[] toUDPBuffers() {
+		
 		byte[] messageBytes = gzipMessage(toJson());
 		// calculate the length of the datagrams array
 		int diagrams_length = messageBytes.length / MAXIMUM_CHUNK_SIZE;

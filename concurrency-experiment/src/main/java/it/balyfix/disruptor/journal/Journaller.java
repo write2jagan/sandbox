@@ -11,6 +11,7 @@ import java.nio.charset.CharsetEncoder;
 import com.lmax.disruptor.EventHandler;
 
 import it.balyfix.disruptor.LongEvent;
+import kafka.log.LogConfig;
 
 public class Journaller implements EventHandler<LongEvent>
 {

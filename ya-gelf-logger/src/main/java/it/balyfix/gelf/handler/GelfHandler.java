@@ -1,4 +1,4 @@
-package it.balyfix.gelf.logging;
+package it.balyfix.gelf.handler;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
