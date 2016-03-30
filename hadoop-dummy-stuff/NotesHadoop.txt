@@ -1,0 +1,87 @@
+Notes for hadoop-2.6.4
+
+1 Before installa install Hadopp is a good practice create a dedicated user and group.
+It is not a required but for security, permission, backup ecc.ecc is better.
+
+
+$ sudo addgroup hadoop
+$ sudo adduser --ingroup hadoop hduser
+
+
+2 Create a profile ssh from hduser 
+ssh-keygen -t rsa -P ""
+cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+
+3: Disable ipv6 cause to avoid that hadhoop bind address on ipv6.
+to chek if ipv6 is enable type
+cat /proc/sys/net/ipv6/conf/all/disable_ipv6,.  If return 0 means that is enable
+to disable add the following lines 
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+
+and reboot the system.
+
+An alternative can create this env variable 
+export HADOOP_OPTS=-Djava.net.preferIPv4Stack=true as indicated in 
+https://issues.apache.org/jira/browse/HADOOP-3437
+
+4: add permission
+ sudo chown -R hduser:hadoop hadoop
+ 
+5: add the following variable to env
+export HADOOP_HOME=/home/fbalicchia/tools/hadoop/hadoop-2.6.4
+unalias fs &> /dev/null
+alias fs="hadoop fs"
+unalias hls &> /dev/null
+alias hls="fs -ls"
+
+
+After basic installation change
+${HADOOP_HOME}/etc/core-site.xml
+<configuration>
+<property>
+  <name>hadoop.tmp.dir</name>
+  <value>/home/fbalicchia/tools/hadoop/app/tmp</value>
+  <description>A base for other temporary directories.</description>
+</property>
+
+<property>
+  <name>fs.default.name</name>
+  <value>hdfs://localhost:54310</value>
+  <description>The name of the default file system.  A URI whose
+  scheme and authority determine the FileSystem implementation.  The
+  uri's scheme determines the config property (fs.SCHEME.impl) naming
+  the FileSystem implementation class.  The uri's authority is used to
+  determine the host, port, etc. for a filesystem.</description>
+</property>
+</configuration>
+
+and 
+
+add JAVA_HOME to 
+etc/hadoop/hadoop-env.sh 
+
+to start Echo system
+sbin/start-dfs.sh and point browser to  http://localhost:50070/
+
+Create directory to run MapReduce jobs
+bin/hdfs dfs -mkdir /user
+bin/hdfs dfs -mkdir /user/fbalicchia
+
+tocheck process and port type
+
+netstat -plten
+
+
+Copy input
+
+bin/hdfs dfs -put etc/hadoop input
+
+
+Run the example 
+bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.4.jar grep input output 'dfs[a-z.]+'
+
+
+
+
