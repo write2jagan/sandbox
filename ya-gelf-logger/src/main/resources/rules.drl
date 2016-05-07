@@ -1,0 +1,15 @@
+import org.graylog2.plugin.Message
+
+rule "Test Rule"
+    when
+	m : Message( getField("full_message") matches ".*([KkEeyY]1|KkEeyY2).*" )
+    then
+        m.addField("source", "localhost.example.com" );
+        System.out.println( "[Overwrite localhost rule fired] : " + m.toString() );
+        System.out.println( "[Messaggio] : " + m.getMessage() );
+        String mess = m.getMessage();
+        System.out.println("dimensione del messaggio " + mess.length());
+        
+        
+end
+
