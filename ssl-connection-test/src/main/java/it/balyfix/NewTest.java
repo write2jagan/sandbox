@@ -39,7 +39,6 @@ public class NewTest {
 		try {
 
 			httplClient = new DefaultHttpClient(connectionManager);
-
 			BasicHttpContext httpContext = new BasicHttpContext();
 			HttpPost httpPost = new HttpPost("");
 			httpPost.addHeader("SOAPAction", "");
