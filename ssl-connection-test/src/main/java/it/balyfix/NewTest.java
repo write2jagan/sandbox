@@ -21,8 +21,7 @@ public class NewTest {
 
 		SchemeRegistry registry = new SchemeRegistry();
 		KeyStore keyStore = KeyStore.getInstance("PKCS12");
-		FileInputStream f = new FileInputStream("/home/fbalicchia/Documents/app18/AAAAAA00H01H501P.P12");
-		keyStore.load(f, "m3D0T4aM".toCharArray());
+		
 		WrapSSlSocketFactory wrapSSlSocketFactory = new WrapSSlSocketFactory(keyStore, "m3D0T4aM");
 		registry.register(new Scheme("https", 443, wrapSSlSocketFactory));
 		ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(registry);
@@ -34,11 +33,7 @@ public class NewTest {
 			httplClient = new DefaultHttpClient(connectionManager);
 
 			BasicHttpContext httpContext = new BasicHttpContext();
-			HttpPost httpPost = new HttpPost("https://wstest.18app.italia.it/VerificaVoucher/Check");
-			httpPost.addHeader("SOAPAction", "http://bonus.mibact.it/VerificaVoucher/Check");
-			httpPost.addHeader("Accept-Encoding", "gzip,deflate");
-			FileEntity entity = new FileEntity(new File("/home/fbalicchia/Documents/app18/request.xml"),
-					"text/xml;charset=UTF-8");
+			
 			httpPost.setEntity(entity);
 
 			System.out.println(httpPost.toString());
