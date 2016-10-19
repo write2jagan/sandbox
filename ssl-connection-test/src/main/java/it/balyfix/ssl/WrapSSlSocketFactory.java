@@ -1,9 +1,9 @@
 package it.balyfix.ssl;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -19,9 +19,9 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.commons.ssl.KeyMaterial;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 public class WrapSSlSocketFactory extends SSLSocketFactory {
@@ -61,19 +61,25 @@ public class WrapSSlSocketFactory extends SSLSocketFactory {
 		setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 	}
 
-//	@Override
-//	public Socket connectSocket(Socket socket, InetSocketAddress remoteAddress, InetSocketAddress localAddress,
-//			HttpParams params) throws IOException, UnknownHostException, ConnectTimeoutException {
-//
-//		String sslConfig = (String) params.getParameter(SoapUIHttpRoute.SOAPUI_SSL_CONFIG);
-//
+	private static SSLSocket enableSocket(SSLSocket socket) {
+		return socket;
+	}
+
+	@Override
+	public Socket createSocket(HttpParams params) throws IOException {
+	//	String sslConfig = (String) params.getParameter(SoapUIHttpRoute.SOAPUI_SSL_CONFIG);
+
+		//if (StringUtils.isEmpty(sslConfig)) {
+			return enableSocket((SSLSocket) sslContext.getSocketFactory().createSocket());
+	//	}
+
 //		SSLSocketFactory factory = factoryMap.get(sslConfig);
 //
 //		if (factory != null) {
 //			if (factory == this) {
-//				return sslContext.getSocketFactory().createSocket();
+//				return enableSocket((SSLSocket) sslContext.getSocketFactory().createSocket());
 //			} else {
-//				return factory.createSocket(params);
+//				return enableSocket((SSLSocket) factory.createSocket(params));
 //			}
 //		}
 //
@@ -89,37 +95,103 @@ public class WrapSSlSocketFactory extends SSLSocketFactory {
 //				File f = new File(keyStore);
 //
 //				if (f.exists()) {
+//					log.info("Initializing Keystore from [" + keyStore + "]");
 //
 //					try {
 //						KeyMaterial km = new KeyMaterial(f, pwd.toCharArray());
 //						ks = km.getKeyStore();
 //					} catch (Exception e) {
-//
+//						SoapUI.logError(e);
 //						pwd = null;
 //					}
 //				}
 //			}
 //
-////			factory = new SoapUISSLSocketFactory(ks, pwd);
-////			factoryMap.put(sslConfig, factory);
+//			factory = new SoapUISSLSocketFactory(ks, pwd);
+//			factoryMap.put(sslConfig, factory);
 //
-//			return factory.createSocket(params);
+//			return enableSocket((SSLSocket) factory.createSocket(params));
 //		} catch (Exception gse) {
-//			return super.createSocket(params);
+//			return enableSocket((SSLSocket) super.createSocket(params));
 //		}
-//
-//	}
-//
-//	@Override
-//	public Socket createLayeredSocket(final Socket socket, final String host, final int port, final boolean autoClose)
-//			throws IOException, UnknownHostException {
-//		SSLSocket sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
-//		// if( getHostnameVerifier() != null )
-//		// {
-//		// getHostnameVerifier().verify( host, sslSocket );
-//		// }
-//		// verifyHostName() didn't blowup - good!
-//		return sslSocket;
-//	}
+	}
+
+	/**
+	 * @since 4.1
+	 */
+	@Override
+	public Socket connectSocket(final Socket socket, final InetSocketAddress remoteAddress,
+			final InetSocketAddress localAddress, final HttpParams params)
+			throws IOException, UnknownHostException, ConnectTimeoutException {
+		if (remoteAddress == null) {
+			throw new IllegalArgumentException("Remote address may not be null");
+		}
+		if (params == null) {
+			throw new IllegalArgumentException("HTTP parameters may not be null");
+		}
+		Socket sock = socket != null ? socket : new Socket();
+		if (localAddress != null) {
+			sock.setReuseAddress(HttpConnectionParams.getSoReuseaddr(params));
+			sock.bind(localAddress);
+		}
+
+		int connTimeout = HttpConnectionParams.getConnectionTimeout(params);
+		int soTimeout = HttpConnectionParams.getSoTimeout(params);
+
+		try {
+			sock.setSoTimeout(soTimeout);
+			sock.connect(remoteAddress, connTimeout);
+		} catch (SocketTimeoutException ex) {
+			throw new ConnectTimeoutException(
+					"Connect to " + remoteAddress.getHostName() + "/" + remoteAddress.getAddress() + " timed out");
+		}
+		SSLSocket sslsock;
+		// Setup SSL layering if necessary
+		if (sock instanceof SSLSocket) {
+			sslsock = (SSLSocket) sock;
+		} else {
+			sslsock = (SSLSocket) sslContext.getSocketFactory().createSocket(sock, remoteAddress.getHostName(),
+					remoteAddress.getPort(), true);
+			sslsock = enableSocket(sslsock);
+		}
+		// do we need it? trust all hosts
+		// if( getHostnameVerifier() != null )
+		// {
+		// try
+		// {
+		// getHostnameVerifier().verify( remoteAddress.getHostName(), sslsock );
+		// // verifyHostName() didn't blowup - good!
+		// }
+		// catch( IOException iox )
+		// {
+		// // close the socket before re-throwing the exception
+		// try
+		// {
+		// sslsock.close();
+		// }
+		// catch( Exception x )
+		// { /* ignore */
+		// }
+		// throw iox;
+		// }
+		// }
+		return sslsock;
+	}
+
+	/**
+	 * @since 4.1
+	 */
+	@Override
+	public Socket createLayeredSocket(final Socket socket, final String host, final int port, final boolean autoClose)
+			throws IOException, UnknownHostException {
+		SSLSocket sslSocket = (SSLSocket) sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
+		sslSocket = enableSocket(sslSocket);
+		// if( getHostnameVerifier() != null )
+		// {
+		// getHostnameVerifier().verify( host, sslSocket );
+		// }
+		// verifyHostName() didn't blowup - good!
+		return sslSocket;
+	}
 
 }
