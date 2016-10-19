@@ -22,7 +22,7 @@ public class NewTest {
 		SchemeRegistry registry = new SchemeRegistry();
 		KeyStore keyStore = KeyStore.getInstance("PKCS12");
 		
-		WrapSSlSocketFactory wrapSSlSocketFactory = new WrapSSlSocketFactory(keyStore, "m3D0T4aM");
+		
 		registry.register(new Scheme("https", 443, wrapSSlSocketFactory));
 		ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(registry);
 
