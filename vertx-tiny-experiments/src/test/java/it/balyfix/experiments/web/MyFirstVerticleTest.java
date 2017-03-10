@@ -1,6 +1,8 @@
 package it.balyfix.experiments.web;
 
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -14,30 +16,32 @@ import org.junit.runner.RunWith;
 @RunWith(VertxUnitRunner.class)
 public class MyFirstVerticleTest {
 
-  private Vertx vertx;
+	private Vertx vertx;
+	
+	private int port = 9999;
 
-  @Before
-  public void setUp(TestContext context) {
-    vertx = Vertx.vertx();
-    vertx.deployVerticle(MyFirstVerticle.class.getName(),
-        context.asyncAssertSuccess());
-  }
+	@Before
+	public void setUp(TestContext context) {
+		vertx = Vertx.vertx();
 
-  @After
-  public void tearDown(TestContext context) {
-    vertx.close(context.asyncAssertSuccess());
-  }
+		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
+		vertx.deployVerticle(MyFirstVerticle.class.getName(), options, context.asyncAssertSuccess());
+	}
 
-  @Test
-  public void testMyApplication(TestContext context) {
-    final Async async = context.async();
+	@After
+	public void tearDown(TestContext context) {
+		vertx.close(context.asyncAssertSuccess());
+	}
 
-    vertx.createHttpClient().getNow(8080, "localhost", "/",
-     response -> {
-      response.handler(body -> {
-        context.assertTrue(body.toString().contains("Hello"));
-        async.complete();
-      });
-    });
-  }
+	@Test
+	public void testMyApplication(TestContext context) {
+		final Async async = context.async();
+
+		vertx.createHttpClient().getNow(port, "localhost", "/", response -> {
+			response.handler(body -> {
+				context.assertTrue(body.toString().contains("Hello"));
+				async.complete();
+			});
+		});
+	}
 }
